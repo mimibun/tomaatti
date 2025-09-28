@@ -1,0 +1,6 @@
+@use 'sass:color';
+@use './defaults.scss' as *;
+
+@mixin icon() {
+    font-family: 'Material Icons', sans-serif;
+}
