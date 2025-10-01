@@ -29,5 +29,8 @@ $crust: #181926;
 
 $text-hover-darken: color.change($text, $lightness: 75%);
 
-//$font-default: 'Cascadia Code Variable', sans-serif;
 $font-default: 'Nunito Variable', sans-serif;
+
+.icon {
+    font-family: 'Material Icons Round', sans-serif;
+}

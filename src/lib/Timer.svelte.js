@@ -1,12 +1,13 @@
-// A Timer takes an array of cycle objects/intervals which contain a name and a duration
-// cycleArray = [ { name: "name", duration: int }, { ... } ]
+// A Timer takes an array of cycle objects (called intervals) which contain a unique id, name and a duration
+// cycleArray = [ { id: "p7feee", name: "name", duration: int }, { ... } ]
 export default class Timer {
     constructor(cycle) {
         this.cycleArray = $state(cycle);
+
         this.intervalIndex = $state(0);
         this.intervalName = $derived(this.cycleArray[this.intervalIndex].name);
         this.intervalDuration = $derived(this.cycleArray[this.intervalIndex].duration);
-        this.intervalProgressPercentage = $derived(this.getProgressAsPercentage())
+        this.intervalProgressPercentage = $derived(this.getProgressAsPercentage());
         this.isPaused = $state(true);
         this.isFinished = $state(false);
         this.remainingIntervalSeconds = $state(Timer.minuteToSeconds(this.cycleArray[this.intervalIndex].duration));
@@ -19,14 +20,16 @@ export default class Timer {
         if (this.currentInterval != null) { return; }
 
         console.log("Starting/Resuming timer...")
+        this.isPaused = false;
+        this.isFinished = false;
+        
         this.currentInterval = setInterval(() => {
             if (this.remainingIntervalSeconds === 0) {
+                this.isPaused = true;
                 this.isFinished = true;
                 this.nextInterval();
                 console.log("Current timer finished!");
             } else {
-                this.isFinished = false;
-                this.isPaused = false;
                 this.remainingIntervalSeconds--;
             };
         }, 1);

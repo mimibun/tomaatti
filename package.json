@@ -17,6 +17,9 @@
 		"vite": "^7.0.4"
 	},
 	"dependencies": {
-		"sass": "^1.93.2"
+		"@fontsource-variable/nunito": "^5.2.7",
+		"@fontsource/material-icons-round": "^5.2.6",
+		"sass": "^1.93.2",
+		"swapy": "^1.0.5"
 	}
 }
