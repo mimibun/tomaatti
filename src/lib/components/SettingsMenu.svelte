@@ -10,6 +10,8 @@
     }
 
     let { volume = $bindable() } = $props();
+
+    $inspect(volume)
 </script>
 
 <article>

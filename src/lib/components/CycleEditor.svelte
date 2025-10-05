@@ -1,86 +1,96 @@
 <script>
-    import { createSwapy } from "swapy";
-    import { onDestroy, onMount } from "svelte";
+    import { createSwapy, utils } from "swapy";
+    import { onDestroy, onMount, untrack } from "svelte";
+    import { useLocalStorage } from "$lib/useLocalStorage.svelte";
 
     // svelte-ignore non_reactive_update
     let container;
     let swapy = null;
 
+
+    const settings = {
+        volume: 0.5,
+        alarm: "pop-pop",
+        cycle: [
+            { id: "gsjp3m", name: "focus", duration: 25 },
+            { id: "u12qjh", name: "short break", duration: 5 },
+            { id: "7wt8dn", name: "focus", duration: 25 },
+            { id: "ogjcyb", name: "long break", duration: 15 },
+        ]
+    };
+
+    useLocalStorage("tomaattiSettings", settings)
+
+    let cycle = $state(useLocalStorage("tomaattiSettings").cycle);
+
+    let slotItemMap = $state(utils.initSlotItemMap(cycle, "id"));
+    let slottedItems = $derived(utils.toSlottedItems(cycle, "id", slotItemMap))
+
+    let setSlotItemMap = (value => (slotItemMap = value));
+
+    $inspect(slottedItems)
+
+    $effect(() => {
+        utils.dynamicSwapy(swapy, cycle, "id", untrack(() => slotItemMap), setSlotItemMap);
+    })
+
     onMount(() => {
         if (container) {
             swapy = createSwapy(container, {
-                dragAxis: "y",
-            });
-
-            swapy.onSwap((event) => {
-                console.log("swap", event);
-            });
+                manualSwap: true,
+                dragAxis: 'y'
+            })
+            
+            swapy.onSwap((event) => { 
+                requestAnimationFrame(() => { 
+                    slotItemMap = event.newSlotItemMap.asArray 
+                }) 
+            }) 
         }
     });
 
     onDestroy(() => {
-        swapyx.destroy();
-        console.log("component has been destroyed")
+        swapy.value?.destroy()
     });
-
-    let savedCycle = [
-        { id: "gsjp3m", name: "focus", duration: 25 },
-        { id: "u12qjh", name: "short break", duration: 5 },
-        { id: "7wt8dn", name: "focus", duration: 25 },
-        { id: "ogjcyb", name: "long break", duration: 15 },
-    ];
-
-    let editableCycle = $state(savedCycle);
 
     function createId() {
         return Math.random().toString(36).slice(2, 8);
-    }
-
-    function removeInterval(id) {
-        editableCycle = editableCycle.filter((interval) => interval.id !== id);
-        swapy.update();
-    }
-
-    function spawnNewIntervalInput() {
-        const emptyInterval = { id: createId(), name: "", duration: 0 };
-
-        if (editableCycle) editableCycle.push(emptyInterval);
-        swapy.update();
-    }
+    };
 </script>
 
-{#key editableCycle}
-    <div class="container" bind:this={container}>
-        {#each editableCycle as interval (interval.id)}
-            <div class="slot" data-swapy-slot={interval.id}>
-                <div class="interval" data-swapy-item={interval.id}>
-                    <div data-swapy-handle style="display:inline-block"><button class="icon handle">drag_indicator</button></div>
-                    <input
-                        type="number"
-                        min="1"
-                        max="60"
-                        oninput={() => {
-                            if (interval.duration >= 60) interval.duration = 60;
-                            if (interval.duration <= 0) interval.duration = 0;
-                        }}
-                        bind:value={interval.duration}
-                        data-swapy-no-drag/>
-                    <input
-                        type="text"
-                        maxlength="12"
-                        bind:value={interval.name}
-                        data-swapy-no-drag/>
-                    <button class="icon remove" onclick={() => removeInterval(interval.id)} data-swapy-no-drag>delete</button>
+<div class="container" bind:this={container}>
+    {#each slottedItems as { slotId, itemId, item }}
+    {#key slotId}
+        <div class="slot" data-swapy-slot={slotId}>
+        {#if item}
+        {#key itemId}
+            <div class="interval" data-swapy-item={itemId}>
+                <div style="display:inline-block"><button class="icon handle">drag_indicator</button></div>
+                <input
+                type="number"
+                min="1"
+                max="60"
+                oninput={() => {
+                    if (item.duration >= 60) item.duration = 60;
+                    if (item.duration <= 0) item.duration = 0;}}
+                    bind:value={item.duration}>
+                    
+                <input
+                type="text"
+                maxlength="12"
+                bind:value={item.name}>
+                    
+                <button class="icon remove" onclick={() => {cycle = cycle.filter((i) => i.id !== item.id)}}>delete</button>
                 </div>
-            </div>
-        {/each}
-    </div>
-{/key}
-
-<div class="">
-    <button class="icon" onclick={() => spawnNewIntervalInput()}>new</button>
-    <button class="icon" onclick={() => {savedCycle = editableCycle}}>save</button>
+        {/key}
+        {/if}
+        </div>
+    {/key}
+    {/each}
+    <button class="icon new-interval" onclick={() => {cycle.push({ id: createId(), name: "", duration: 0 })}}>add</button>
 </div>
+
+
 
 <style lang="scss">
     @use '$scss/defaults.scss' as *;
@@ -88,13 +98,13 @@
     .container {
         display: flex;
         flex-direction: column;
-        gap: 0.3rem;
+        gap: 0.5rem;
     }
 
     .interval {
         display: flex;
         justify-content: space-between;
-        gap: 0.3rem;
+        gap: 0.5rem;
     }
 
     input::-webkit-outer-spin-button,
@@ -103,9 +113,8 @@
         margin: 0;
     }
 
-    /* Firefox */
     input[type=number] {
-        -moz-appearance: textfield;
+        appearance: textfield;
     }
 
     input {
@@ -129,10 +138,6 @@
         transition: transform .3s cubic-bezier(0,0,0,1),opacity .3s cubic-bezier(0,0,0,1);
     }
 
-    .item[data-swapy-dragging] {
-        opacity: 0.6;
-    }
-
     button {
         &:hover {
             transform: scale(110%);
@@ -151,9 +156,11 @@
                 transform: none;
                 cursor: grab;
             }
-
-            background-color: $overlay1;
+            
+            background-color: $surface2;
+            color: $subtext1;
         }
+
         background-color: $surface0;
 
         border: none;
@@ -165,5 +172,17 @@
 
         color: $text;
         transition: transform .3s cubic-bezier(0,0,0,1),opacity .3s cubic-bezier(0,0,0,1);
+    }
+
+    button.new-interval {
+        &:hover {
+            transition: scale(100%);
+        }
+
+        flex-grow: 1;
+        width: 100%;
+        align-self: center;
+        text-align: center;
+        border: $green 1px solid inset;
     }
 </style>

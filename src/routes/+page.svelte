@@ -10,13 +10,6 @@
     import '@fontsource-variable/nunito';
 	import '@fontsource/material-icons-round';
 
-    let settings = $state("");
-    let settingsArray = $state([])
-
-    onMount(() => {
-        localStorage.setItem("cycle", JSON.stringify(defaultCycle));
-    })
-
     let test = {
         gay: "true",
         urmom: "gay",
@@ -40,11 +33,6 @@
         if (timer.isFinished) {
             alarm.play();
         };   
-    })
-    
-    $effect(() => {
-        settings = localStorage.getItem("cycle");
-        settingsArray = JSON.parse(settings);
     })
 </script>
 
@@ -72,10 +60,6 @@
         <SettingsMenu bind:volume={alarmVolume}/>
     </article>
 </main>
-
-{#each settingsArray as item}
-    {item.name}
-{/each}
 
 
 <audio bind:this={alarm} preload="auto">
