@@ -11,7 +11,17 @@
 
     let { volume = $bindable() } = $props();
 
-    $inspect(volume)
+
+    let settings = $state({
+        volume: 0.5,
+        alarm: "pop-pop",
+        cycle: [
+            { id: "gsjp3m", name: "focus", duration: 25 },
+            { id: "u12qjh", name: "short break", duration: 5 },
+            { id: "7wt8dn", name: "focus", duration: 25 },
+            { id: "ogjcyb", name: "long break", duration: 15 },
+        ]
+    });
 </script>
 
 <article>
@@ -20,11 +30,11 @@
     <section class="settings" transition:slide={{ duration: 200, easing: circInOut }}>
         <div class="volume-slider">
             <span class="icon">volume_mute</span>
-            <input type="range" name="volume" id="volume" min="0" max="1" step="0.01" bind:value={volume}>
+            <input type="range" name="volume" id="volume" min="0" max="1" step="0.01" >
             <span class="icon">volume_up</span>
         </div>
         <div class="cycle-editor">
-            <CycleEditor />
+            <CycleEditor bind:settings={settings}/>
         </div>
         <div class="alarm-selector">
             <AlarmSelector/>

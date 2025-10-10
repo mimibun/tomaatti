@@ -1,37 +1,22 @@
 <script>
+    let { settings = $bindable() } = $props();
+
     import { createSwapy, utils } from "swapy";
     import { onDestroy, onMount, untrack } from "svelte";
-    import { useLocalStorage } from "$lib/useLocalStorage.svelte";
+
+    import { createId } from "$lib/createId.js";
 
     // svelte-ignore non_reactive_update
     let container;
     let swapy = null;
 
-
-    const settings = {
-        volume: 0.5,
-        alarm: "pop-pop",
-        cycle: [
-            { id: "gsjp3m", name: "focus", duration: 25 },
-            { id: "u12qjh", name: "short break", duration: 5 },
-            { id: "7wt8dn", name: "focus", duration: 25 },
-            { id: "ogjcyb", name: "long break", duration: 15 },
-        ]
-    };
-
-    useLocalStorage("tomaattiSettings", settings)
-
-    let cycle = $state(useLocalStorage("tomaattiSettings").cycle);
-
-    let slotItemMap = $state(utils.initSlotItemMap(cycle, "id"));
-    let slottedItems = $derived(utils.toSlottedItems(cycle, "id", slotItemMap))
+    let slotItemMap = $state(utils.initSlotItemMap(settings.cycle, "id"));
+    let slottedItems = $derived(utils.toSlottedItems(settings.cycle, "id", slotItemMap))
 
     let setSlotItemMap = (value => (slotItemMap = value));
 
-    $inspect(slottedItems)
-
     $effect(() => {
-        utils.dynamicSwapy(swapy, cycle, "id", untrack(() => slotItemMap), setSlotItemMap);
+        utils.dynamicSwapy(swapy, settings.cycle, "id", untrack(() => slotItemMap), setSlotItemMap);
     })
 
     onMount(() => {
@@ -42,7 +27,7 @@
             })
             
             swapy.onSwap((event) => { 
-                requestAnimationFrame(() => { 
+                requestAnimationFrame(() => {
                     slotItemMap = event.newSlotItemMap.asArray 
                 }) 
             }) 
@@ -52,10 +37,6 @@
     onDestroy(() => {
         swapy.value?.destroy()
     });
-
-    function createId() {
-        return Math.random().toString(36).slice(2, 8);
-    };
 </script>
 
 <div class="container" bind:this={container}>
@@ -80,14 +61,17 @@
                 maxlength="12"
                 bind:value={item.name}>
                     
-                <button class="icon remove" onclick={() => {cycle = cycle.filter((i) => i.id !== item.id)}}>delete</button>
+                <button class="icon remove" onclick={() => {
+                    if (settings.cycle.length > 1) {
+                        settings.cycle = settings.cycle.filter((i) => i.id !== item.id)
+                    }}}>delete</button>
                 </div>
         {/key}
         {/if}
         </div>
     {/key}
     {/each}
-    <button class="icon new-interval" onclick={() => {cycle.push({ id: createId(), name: "", duration: 0 })}}>add</button>
+    <button class="icon new-interval" onclick={() => {settings.cycle.push({ id: createId(), name: "", duration: 0 })}}>add</button>
 </div>
 
 
