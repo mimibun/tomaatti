@@ -2,7 +2,7 @@
 // cycleArray = [ { id: "p7feee", name: "name", duration: int }, { ... } ]
 export default class Timer {
     constructor(cycle) {
-        this.cycleArray = $state(cycle);
+        this.cycleArray = cycle;
 
         this.intervalIndex = $state(0);
         this.intervalName = $derived(this.cycleArray[this.intervalIndex].name);
@@ -22,7 +22,7 @@ export default class Timer {
         console.log("Starting/Resuming timer...")
         this.isPaused = false;
         this.isFinished = false;
-        
+
         this.currentInterval = setInterval(() => {
             if (this.remainingIntervalSeconds === 0) {
                 this.isPaused = true;
@@ -34,20 +34,20 @@ export default class Timer {
             };
         }, 1);
     };
-    
+
     stop() { // stops the timer
         this.isPaused = true;
         clearInterval(this.currentInterval);
         this.currentInterval = null;
         console.log("Stopped timer...");
     };
-    
+
     toggle() {
         if (this.currentInterval != null) {
             this.stop()
         } else { this.start(); }
     };
-    
+
     skip() {
         this.nextInterval()
         console.log("Current timer skipped...");
@@ -55,34 +55,17 @@ export default class Timer {
 
     nextInterval() {
         this.stop();
-        if (this.intervalIndex >= this.cycleArray.length - 1) {
-            this.intervalIndex = 0;
-        } else { this.intervalIndex++; };
+        this.intervalIndex = (this.intervalIndex + 1) % this.cycleArray.length // thanks gideon! 
 
         this.remainingIntervalSeconds = Timer.minuteToSeconds(this.cycleArray[this.intervalIndex].duration);
-    };
-
-    
-    setNewCycle(newCycle) {
-        this.cycleArray = newCycle;
-        this.reset();
-        console.log(`New cycle (${this.cycleArray}) set!`);
-    };
-
-    reset() {
-        this.stop();
-        this.intervalIndex = 0;
-        this.remainingIntervalSeconds = Timer.minuteToSeconds(this.cycleArray[this.intervalIndex].duration);
-        this.intervalProgressPercentage = 0;
-        console.log("Timer reset...");
     };
 
     getProgressAsPercentage() {
-        let minutesDuration = Timer.minuteToSeconds(this.cycleArray[this.intervalIndex].duration); 
+        let minutesDuration = Timer.minuteToSeconds(this.cycleArray[this.intervalIndex].duration);
         return 100 - (this.remainingIntervalSeconds / minutesDuration) * 100;
     }
 
-    
+
     static minuteToSeconds(minutes) {
         return minutes * 60;
     }
@@ -98,3 +81,4 @@ export default class Timer {
         return `${minutes}:${seconds}`;
     }
 };
+

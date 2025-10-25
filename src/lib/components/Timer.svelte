@@ -1,30 +1,34 @@
 <script>
-    import Timer from '$lib/Timer.svelte.js';
+    let { progress = $bindable(), settings } = $props()
     
-    let cycle = $state([
-        { id: "gsjp3m", name: "focus", duration: 25 },
-        { id: "u12qjh", name: "short break", duration: 5 },
-        { id: "7wt8dn", name: "focus", duration: 25 },
-        { id: "ogjcyb", name: "long break", duration: 15 },
-    ]);
+    import Timer from '$lib/Timer.svelte.js';
+    import { alarms } from "$lib/alarms";
 
-    let timer = new Timer(cycle);
+    let timer = new Timer(settings.cycle);
 
     let alarm;
-    let alarmVolume = $state(0.5);
+    let alarmVolume = $derived(settings.volume);
+    let selectedAlarm = $derived(alarms.find(alarm => alarm.id === settings.alarm))
 
     $effect(() => {
         alarm.volume = alarmVolume;
 
         if (timer.isFinished) {
             alarm.play();
-        };   
+        };
     })
 
+    $effect(() => {
+        progress = timer.intervalProgressPercentage
+    })
+
+    $inspect(timer)
 </script>
 
 <section class="timer">
-    <p id="phase">{timer.intervalName}</p>
+    {#if timer.intervalName != ""}
+        <p id="name">{timer.intervalName}</p>
+    {/if}
     <p id="time">{timer.digitalTime}</p>
     <section class="buttons">
         <button class="icon" onclick={() => timer.toggle()}>{timer.isPaused ? "play_arrow" : "pause"}</button>
@@ -32,9 +36,11 @@
     </section>
 </section>
 
-<audio bind:this={alarm} preload="auto">
-    <source src="/audio/pop-pop.ogg">
-</audio>
+{#key selectedAlarm}
+    <audio bind:this={alarm} preload="auto" volume={settings.volume}>
+        <source src={selectedAlarm.path}>
+    </audio>
+{/key}
 
 <style lang="scss">
 	@use '$scss/defaults.scss' as *;
@@ -46,14 +52,11 @@
         justify-content: center;
         align-items: center;
 
-        flex-grow: 1;
-        width: 390px;
-
         background-color: $surface0;
         
         border-radius: 30px;
 
-        #phase {
+        #name {
             font-size: 1.5rem;
             padding: 1rem 0 0 0;
         }

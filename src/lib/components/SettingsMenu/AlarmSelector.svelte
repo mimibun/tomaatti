@@ -1,36 +1,36 @@
 <script>
+    let { selectedAlarm = $bindable() } = $props()
+
+    import { alarms } from "$lib/alarms";
+
 	import { fly } from "svelte/transition";
 
-    const alarms = ["one","two","three","four"];
+    let selectedAlarmIndex = $state(selectedAlarm === "" ?  selectedAlarm = alarms[0].id : alarms.map(e => e.id).indexOf(selectedAlarm))
+    let flyDirection = $state(1);
 
-    const newAlarms = [
-        { name: "Pop-pop", path:"/audio/pop-pop.ogg" },
-        { name: "Pop", path: "/audio/pop.ogg" }
-    ]
-
-    let currentAlarmIndex = 0;
-
-    let flyDirection = 1;
-
-    function nextAlarm() {
-        currentAlarmIndex + 1 < newAlarms.length ? currentAlarmIndex++ : currentAlarmIndex = 0;
+    function next() {
+        selectedAlarmIndex + 1 < alarms.length ? selectedAlarmIndex++ : selectedAlarmIndex = 0;
 
         flyDirection = 1;
     };
 
-    function previousAlarm() {
-        currentAlarmIndex - 1 < 0 ? currentAlarmIndex = newAlarms.length -1 : currentAlarmIndex--;
+    function previous() {
+        selectedAlarmIndex - 1 < 0 ? selectedAlarmIndex = alarms.length -1 : selectedAlarmIndex--;
 
         flyDirection = -1;
     };
+
+    $effect(() => {
+        selectedAlarm = alarms[selectedAlarmIndex].id
+    })
 </script>
 
 <div class="container">
-    <button on:click={previousAlarm} class="icon rotate-180">arrow_forward_ios</button>
-    {#key currentAlarmIndex}
-    <p in:fly={{ x: 150 * flyDirection }} out:fly={{ x: -150 * flyDirection }}>{newAlarms[currentAlarmIndex].name}</p>
-    {/key}
-    <button on:click={nextAlarm} class="icon">arrow_forward_ios</button>
+    <button onclick={() => previous()} class="icon rotate-180">arrow_forward_ios</button>
+        {#key selectedAlarmIndex}
+            <p in:fly={{ x: 150 * flyDirection }} out:fly={{ x: -150 * flyDirection }}>{alarms[selectedAlarmIndex].name}</p>
+        {/key}
+    <button onclick={() => next()} class="icon">arrow_forward_ios</button>
 </div>
 
 <style lang="scss">

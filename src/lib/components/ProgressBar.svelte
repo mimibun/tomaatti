@@ -4,7 +4,7 @@
 </script>
 
 <div class="progress-bar">
-    <div class="progress" style="width:{progress}%"></div>
+    <div class="progress" style="transform: translateX(-{100 - progress}%)"></div>
 </div>
 
 <style lang="scss">
@@ -22,8 +22,7 @@
     .progress {
         background: linear-gradient(69deg, $mauve, $lavender) left bottom $surface1 no-repeat;
         height: 100%;
+        width: 100%;
         border-radius: 100vw;
-
-        transition: width 0.5s ease-in-out;
     }
 </style>

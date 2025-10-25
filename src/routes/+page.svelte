@@ -1,14 +1,37 @@
 <script>
-    import { onMount } from 'svelte';
-
 	import favicon from '$lib/assets/favicon.svg';
     
     import Timer from '$lib/components/Timer.svelte'
 	import ProgressBar from "$lib/components/ProgressBar.svelte";
-	import SettingsMenu from "$lib/components/SettingsMenu.svelte";
+	import SettingsMenu from "$lib/components/SettingsMenu/SettingsMenu.svelte";
 
     import '@fontsource-variable/nunito';
 	import '@fontsource/material-icons-round';
+
+    import { onMount } from 'svelte';
+
+    let progress = $state()
+
+    let settings = $state({
+        volume: 0.5,
+        alarm: "blxuhi",
+        cycle: [
+            { id: "gsjp3m", name: "focus", duration: 25 },
+            { id: "u12qjh", name: "short break", duration: 5 },
+            { id: "7wt8dn", name: "focus", duration: 25 },
+            { id: "ogjcyb", name: "long break", duration: 15 },
+        ]
+    });
+
+    onMount(() => {
+        if (localStorage.getItem("settings") === 0) {
+            localStorage.setItem("settings", JSON.stringify(settings))
+        } else { settings = JSON.parse(localStorage.getItem("settings"))}
+    })
+
+    $effect(() => {
+        localStorage.setItem("settings", JSON.stringify(settings))
+    })
 </script>
 
 <svelte:head>
@@ -16,18 +39,18 @@
 </svelte:head>
 
 <main>
-    <article>
-        <p id="name">tomaatti</p>
-        <section class="timer">
-            <Timer />
-        </section>
-        <section class="progress-bar">
-            <ProgressBar progress={50}/>
-        </section>
-        <section class="settings-menu">
-            <SettingsMenu />
-        </section>
-    </article>
+    <p id="name">tomaatti 🍅</p>
+    <section class="timer">
+        {#key settings.cycle}
+            <Timer bind:progress={progress} {settings} />
+        {/key}
+    </section>
+    <section class="progress-bar">
+        <ProgressBar {progress}/>
+    </section>
+    <section class="settings-menu">
+        <SettingsMenu bind:settings={settings}/>
+    </section>
 </main>
 
 <style lang="scss">
@@ -48,7 +71,7 @@
 		color: $text;
 	}
 
-    article {
+    main {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -63,6 +86,10 @@
     #name {
         font-weight: bold;
         font-size: 3rem;
+    }
+
+    .timer {
+        width: 100%
     }
 
     .settings-menu {

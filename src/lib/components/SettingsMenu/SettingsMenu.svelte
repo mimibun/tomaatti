@@ -1,4 +1,6 @@
 <script>
+    let { settings = $bindable() } = $props()
+
 	import { circInOut } from "svelte/easing";
 	import { slide } from "svelte/transition";
 	import AlarmSelector from "./AlarmSelector.svelte";
@@ -9,19 +11,9 @@
         isVisible ? isVisible = false : isVisible = true;
     }
 
-    let { volume = $bindable() } = $props();
-
-
-    let settings = $state({
-        volume: 0.5,
-        alarm: "pop-pop",
-        cycle: [
-            { id: "gsjp3m", name: "focus", duration: 25 },
-            { id: "u12qjh", name: "short break", duration: 5 },
-            { id: "7wt8dn", name: "focus", duration: 25 },
-            { id: "ogjcyb", name: "long break", duration: 15 },
-        ]
-    });
+    function saveCycle(items) {
+        settings.cycle = items.map(i => i.item)
+    }
 </script>
 
 <article>
@@ -30,14 +22,14 @@
     <section class="settings" transition:slide={{ duration: 200, easing: circInOut }}>
         <div class="volume-slider">
             <span class="icon">volume_mute</span>
-            <input type="range" name="volume" id="volume" min="0" max="1" step="0.01" >
+            <input type="range" name="volume" id="volume" min="0" max="1" step="0.01" bind:value={settings.volume}>
             <span class="icon">volume_up</span>
         </div>
         <div class="cycle-editor">
-            <CycleEditor bind:settings={settings}/>
+            <CycleEditor {saveCycle} cycle={settings.cycle}/>
         </div>
         <div class="alarm-selector">
-            <AlarmSelector/>
+            <AlarmSelector bind:selectedAlarm={settings.alarm}/>
         </div>
     </section>
     {/if}
