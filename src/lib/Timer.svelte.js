@@ -32,7 +32,7 @@ export default class Timer {
             } else {
                 this.remainingIntervalSeconds--;
             };
-        }, 1);
+        }, 1000);
     };
 
     stop() { // stops the timer
