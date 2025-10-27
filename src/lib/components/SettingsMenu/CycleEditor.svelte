@@ -24,9 +24,9 @@
         }
     }
 
-    function compareItemsToCycle(slottedItems) {
-        if (slottedItems.length === cycle.length) {
-            return slottedItems.every((element, index, a) => element.id === cycle[index]?.id && element.name === cycle[index].name && element.duration === cycle[index].duration)
+    function compareItemsToCycle(items) {
+        if (items.length === cycle.length) {
+            return items.every((element, index, a) => element != undefined && element.id === cycle[index].id && element.name === cycle[index].name && element.duration === cycle[index].duration)
         } else { return false }
     }
     //--------------------------------------------------------------
