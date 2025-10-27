@@ -10,6 +10,13 @@
     let alarmVolume = $derived(settings.volume);
     let selectedAlarm = $derived(alarms.find(alarm => alarm.id === settings.alarm))
 
+    let status = $derived(getTimerStatus())
+
+    function getTimerStatus() {
+        if (timer.isPaused && !timer.isFinished) { return "paused"}
+        if (timer.isFinished) { return "done!" } else { return timer.digitalTime }
+    }
+
     $effect(() => {
         alarm.volume = alarmVolume;
 
