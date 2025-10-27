@@ -32,6 +32,10 @@
     $inspect(timer)
 </script>
 
+<svelte:head>
+    <title>tomaatti - {status}</title> 
+</svelte:head>
+
 <section class="timer">
     {#if timer.intervalName != ""}
         <p id="name">{timer.intervalName}</p>
