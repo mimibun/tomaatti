@@ -24,7 +24,7 @@
     });
 
     onMount(() => {
-        if (localStorage.getItem("settings") === 0) {
+        if (localStorage.getItem("settings") === null) {
             localStorage.setItem("settings", JSON.stringify(settings))
         } else { settings = JSON.parse(localStorage.getItem("settings"))}
     })
