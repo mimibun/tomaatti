@@ -5,11 +5,12 @@
 - i'm using the pomodoro technique and have used various timers online, but i found them to be a bit too bloated or complicated and also didn't allow for setting the right alarm sounds. additionally, i wanted to practice my coding, get more familiar with svelte and also design something, and thus i decided to make this timer be a thing.
 ## features
 - looks cool and nice! ✨
-- dark mode by default!
-- self-made alarm sound (by me!)
-- customisable pomodoro cycle (duration and order)
-- adjustable volume!
-- select your alarm sound! (i'll add more soon!)
+- self-pixel'd favicon! 🍅
+- dark mode by default! 🌙
+- self-made alarm sound (by me!) ⏰
+- customisable pomodoro cycle (duration and order) 🌈
+- adjustable volume! 🔈
+- select your alarm sound! (i'll add more soon!) 
 ## credits
 - [Swapy](https://swapy.tahazsh.com/) - the library i used to implement drag-n-drop
 - Minecraft/Mojang - for one of the alarm sound
