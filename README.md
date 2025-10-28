@@ -14,6 +14,6 @@
 ## credits
 - [Swapy](https://swapy.tahazsh.com/) - the library i used to implement drag-n-drop
 - Minecraft/Mojang - for one of the alarm sound
-- [G-Ritter](https://github.com/G-Ritter) - for helping me so much by answering so many questions i had, giving feedback and encouragement
+- [G-Ritter](https://github.com/G-Ritter) - for helping me so much by answering so many questions i had, giving feedback and encouragement and being a friend
 - [Feuerhamster](https://github.com/Feuerhamster) - encourging me and being a friend
 - thanks to the people at [Chaospott](https://chaospott.de/) - the encouragement and just providing a nice environment to tinker in
