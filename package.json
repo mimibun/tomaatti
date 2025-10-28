@@ -11,6 +11,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^6.0.0",
+		"@sveltejs/adapter-node": "^5.4.0",
 		"@sveltejs/adapter-static": "^3.0.10",
 		"@sveltejs/kit": "^2.22.0",
 		"@sveltejs/vite-plugin-svelte": "^6.0.0",
@@ -20,6 +21,7 @@
 	"dependencies": {
 		"@fontsource-variable/nunito": "^5.2.7",
 		"@fontsource/material-icons-round": "^5.2.6",
+		"dotenv": "^17.2.3",
 		"sass": "^1.93.2",
 		"swapy": "^1.0.5"
 	}
