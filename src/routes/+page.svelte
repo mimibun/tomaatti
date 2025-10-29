@@ -81,6 +81,8 @@
 
         margin: 0;
         gap: 1rem;
+
+        padding: 0.75rem;
     }
 
     #name {
