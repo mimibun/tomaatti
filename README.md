@@ -3,6 +3,8 @@
 - this is a simple [pomodoro](https://en.wikipedia.org/wiki/Pomodoro_Technique) timer. the pomodoro technique is a system to help people concentrate by dividing work into usually managable/short blocks, to make focusing easier, as the blocks are short and seperated by short breaks.
 > why did you make this project?
 - i'm using the pomodoro technique and have used various timers online, but i found them to be a bit too bloated or complicated and also didn't allow for setting the right alarm sounds. additionally, i wanted to practice my coding, get more familiar with svelte and also design something, and thus i decided to make this timer be a thing.
+> what does "tomaatti" mean?
+- since pomodoro is the italian word for "tomato", tomaatti is the finnish equivalent.
 ## features
 - looks cool and nice! ✨
 - self-pixel'd favicon! 🍅
