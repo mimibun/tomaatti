@@ -59,6 +59,7 @@
         }
         
         background-color: $surface0;
+        min-width: 0;
         flex: 1;
         padding: 0.2rem 1rem;
         
