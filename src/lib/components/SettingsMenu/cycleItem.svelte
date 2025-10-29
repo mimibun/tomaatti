@@ -102,6 +102,7 @@
         height: 2rem;
         width: 2rem;
         z-index: 1;
+        flex-grow: 0;
 
         color: $text;
         transition: transform .3s cubic-bezier(0,0,0,1),opacity .3s cubic-bezier(0,0,0,1);
